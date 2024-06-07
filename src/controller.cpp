@@ -1,11 +1,9 @@
 #include "controller.h"
-#include "view.h"
 #include "model.h"
-#include <cmath>
-#include <functional>
-#include <iostream>
-#include <memory>
-#include <mutex>
+
+// Completely up to you how you want to implement this. It is your controller, after all.
+// See https://github.com/Argyraspides/Telos for an example of a controller implementation in the form of
+// safely retrieving/manipulating data from a physics engine
 
 Controller::Controller(Model *model)
 {
