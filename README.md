@@ -13,7 +13,7 @@ The template is a simple MVC pattern You can immediately start adding anything t
 
 The model, view, and controller all run on separate threads, so it's vital you ensure some sort of thread safety between these components. The view itself is split into two threads: one for rendering and one for handling input events (through ``SDL_Event``)
 
-The controller and model is, of course, completely up to you as to how you implement it as that will be completely dependent on what you want to make. The only thing to note that the ``run`` function in the model is mandatory as it is the function invoked by its thread, and this will be the models ``main`` function, basically.
+The controller and model is, of course, completely up to you as to how you implement it as that will be completely dependent on what you want to make. The only thing to note that the ``threadEntry`` function in the model is mandatory as it is the function invoked by its thread and the gateway for it to reach the ``run`` function.
 
 ## "Prerequisites"
 - ### [WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly) compatible browser
