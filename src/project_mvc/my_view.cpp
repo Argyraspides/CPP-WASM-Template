@@ -19,7 +19,7 @@ void MyView::RenderSDL(SDL_Renderer &renderer)
 // Handle SDL events here
 void MyView::HandleSDLEvents(SDL_Event &event)
 {
-    QuitOnPressQ(event); // Quit the program when 'q' is pressed as an example
+    HandlePKey(event); // Quit the program when 'q' is pressed as an example
 }
 
 // SETUP & EXAMPLE FUNCTIONS BELOW ************************************************************************************
@@ -77,7 +77,7 @@ void MyView::DrawCircle(SDL_Renderer &renderer)
 }
 
 // Here is an example function on event handling. It makes a POST request if 'p' is pressed.
-void MyView::QuitOnPressQ(SDL_Event &event)
+void MyView::HandlePKey(SDL_Event &event)
 {
     if (event.type == SDL_KEYDOWN)
     {
@@ -104,7 +104,7 @@ void MyView::POSTRequest()
     // Make the POST request
     ApiResponse resp = Hermes::POST("https://reqres.in/api/users", data);
 
-    // Print the response
+    // Print the response (this will be visible in the developer console of your browser when you press 'p' in the SDL window)
     std::cout << resp.data << std::endl;
 
 #endif

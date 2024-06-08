@@ -19,6 +19,6 @@ public:
     ImGuiIO &ImGuiSetup() override;                                       // Set up ImGui stuff here
 
     void DrawCircle(SDL_Renderer &renderer); // Example function to draw a circle using SDL2
-    void QuitOnPressQ(SDL_Event &event);     // Example function to quit the program when 'q' is pressed
+    void HandlePKey(SDL_Event &event);       // Example function to handle the 'p' key being pressed
     void POSTRequest();                      // Example function to make a POST request using Hermes
 };
