@@ -11,15 +11,15 @@ void MyView::RenderImGui(ImGuiIO &io)
 // Add whatever SDL stuff you want to render here.
 void MyView::RenderSDL(SDL_Renderer &renderer)
 {
-    SDL_SetRenderDrawColor(&renderer, 0, 0, 0, 0);
-    SDL_RenderClear(&renderer); // Clear the renderer with the set color (black in this case: (0,0,0,0))
+    SDL_SetRenderDrawColor(&renderer, 0, 0, 0, 0); // Clear the renderer with the set color (black in this case: (0,0,0,0))
+    SDL_RenderClear(&renderer); 
     DrawCircle(renderer);       // Draw a circle as an example.
 }
 
 // Handle SDL events here
 void MyView::HandleSDLEvents(SDL_Event &event)
 {
-    HandlePKey(event); // Quit the program when 'q' is pressed as an example
+    HandlePKey(event); // Handling the pressing of the key 'p' as an example
 }
 
 // SETUP & EXAMPLE FUNCTIONS BELOW ************************************************************************************
