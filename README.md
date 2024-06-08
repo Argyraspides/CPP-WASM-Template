@@ -15,6 +15,8 @@ The model, view, and controller all run on separate threads, so it's vital you e
 
 The controller and model is, of course, completely up to you as to how you implement it as that will be completely dependent on what you want to make. The only thing to note that the ``threadEntry`` function in the model is mandatory as it is the function invoked by its thread and the gateway for it to reach the ``run`` function.
 
+I've added a module for you called ``Hermes`` in ``include/project_utils/hermes.h`` which you can use to make GET and POST requests with C++. The ``my_view.cpp`` file has an example on how to use this. You can easily figure out how to then make PATCH, PUT, and DELETE requests by looking at ``hermes.h``
+
 ## "Prerequisites"
 - ### [WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly) compatible browser
   - Nearly all modern browsers support WebAssembly. If you want to check if your browser is supported see [this page](https://caniuse.com/wasm).
@@ -24,6 +26,8 @@ The controller and model is, of course, completely up to you as to how you imple
   - Already included in this repo. EMscripten is a toolchain used to compile C++ to JS and ultimately [WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly) (.wasm).
 - ### [ImGui](https://github.com/ocornut/imgui)
   - Already included in this repo. ImGui is a GUI library for C++.
+- ### [nlohman::json](https://github.com/nlohmann/json/releases/tag/v3.11.3)
+  - Already included in this repo. It's a pretty nice JSON parser library for C++. 
 - ### [CMake](https://cmake.org/)
   - A powerful build tool for building C/C++ programs. You must install this yourself.
  
