@@ -32,6 +32,9 @@ file(GLOB SOURCES
 # ADD SDL2 AS A LIBRARY. IT ALREADY HAS ITS OWN CMAKELISTS.TXT SO WE CAN JUST STRAIGHT UP ADD THE SUBDIRECTORY
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/lib/SDL2")
 
+# ADD JSON AS A LIBRARY. IT ALREADY HAS ITS OWN CMAKELISTS.TXT SO WE CAN JUST STRAIGHT UP ADD THE SUBDIRECTORY
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/lib/json-3.11.3")
+
 
 ##############################################################################################################
 # ADD IMGUI AS A STATIC LIBRARY
@@ -48,7 +51,9 @@ add_library(SDL2GFX STATIC ${SDL2GFX_SOURCES})
 
 # RECURSIVELY OBTAIN ALL DIRECTORIES THAT HAVE .H FILES FOR THE PROJECT
 file(GLOB_RECURSE PROJECT_INCLUDE_DIRS LIST_DIRECTORIES true
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/*"  
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/*"                         # PROJECT INCLUDES
+    "${CMAKE_CURRENT_SOURCE_DIR}/lib/json-3.11.3/include/*"         # JSON INCLUDES
+    "${CMAKE_CURRENT_SOURCE_DIR}/lib/json-3.11.3/single_include/*"  # JSON SINGLE INCLUDES
 )
 
 # ONLY KEEP THE PATHS TO THE DIRECTORIES AND NOT FILES THEMSELVES
@@ -70,9 +75,12 @@ include_directories(
     "${CMAKE_CURRENT_SOURCE_DIR}/lib/imgui/examples/libs/emscripten"    # IMGUI EMSCRIPTEN
     ${PROJECT_INCLUDES}                                                 # THE PROJECT ITSELF
 
-    # WHEN WE RECURSIVELY SEARCHED FOR DIRECTORIES INSIDE OF /INCLUDE, THIS 
-    # DID NOT INCLUDE THE /INCLUDE DIRECTORY ITSELF. SO WE NEED TO ADD IT MANUALLY
-    "${CMAKE_CURRENT_SOURCE_DIR}/include"                               
+    # WHEN WE RECURSIVELY SEARCHED FOR DIRECTORIES INSIDE OF /INCLUDE, 
+    # FOR BOTH JSON-3.11.3 AND THE PROJECT, WE ONLY GOT THE INNER DIRECTORIES, 
+    # WE DID NOT INCLUDE THE /INCLUDE DIRECTORIES THEMSELVES. SO WE NEED TO ADD IT MANUALLY
+    "${CMAKE_CURRENT_SOURCE_DIR}/include"           
+    "${CMAKE_CURRENT_SOURCE_DIR}/lib/json-3.11.3/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/lib/json-3.11.3/single_include"                         
 )
 
 
@@ -96,19 +104,42 @@ if(MY_COMPILER STREQUAL "emcc")
     # SET THE EXECUTABLE SUFFIX TO .JS
     set(CMAKE_EXECUTABLE_SUFFIX ".js")
     # SET THE COMPILER FLAGS
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s WASM=1")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2")
+
+    # -s WASM=1: ENABLES WEB ASSEMBLY
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -sWASM=1")   
+
+    # -s USE_SDL=2: ENABLES SUPPORT FOR SDL2                                        
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -sUSE_SDL=2")
+
+    # -s ASYNCIFY ENABLES THE ASYNCIFY FEATURE IN EMSCRIPTEN
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -sASYNCIFY")
+
+    # -s ASYNCIFY_IMPORTS=EM_JS_GET,EM_JS_POST: ENABLES THE USE OF "EM_JS_GET" AND "EM_JS_POST" FUNCTIONS DEFINED INSIDE OF HERMES
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -sASYNCIFY_IMPORTS=EM_JS_GET,EM_JS_POST")
+
+    # -s FETCH: ENABLES THE FETCH API IN EMSCRIPTEN
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -sFETCH")
+    
+    # -s PTHREAD_POOL_SIZE=navigator.hardwareConcurrency: ENABLES MULTITHREADING
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s PTHREAD_POOL_SIZE=navigator.hardwareConcurrency")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s TOTAL_MEMORY=512MB")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency")
+
+    # -s TOTAL_MEMORY=512MB: SETS THE TOTAL HEAP MEMORY TO 512MB
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -sTOTAL_MEMORY=512MB")
+
+    # --preload-file: PRELOADS FILES INTO THE VIRTUAL FILESYSTEM
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/Roboto@assets/Roboto")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+
+    # -O3: ENABLES OPTIMIZATION LEVEL 3 (OPTIONAL)
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
     
     link_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib/SDL2")
+    link_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib/json-3.11.3")
+
     target_link_libraries(${PROJECT_NAME} "imgui" "SDL2GFX")
 
 elseif((MY_COMPILER STREQUAL "gcc")) 
-    target_link_libraries(${PROJECT_NAME} "SDL2" "SDL2GFX" "imgui" "OpenGL::GL" )
+    target_link_libraries(${PROJECT_NAME} "SDL2" "SDL2GFX" "imgui" "OpenGL::GL" "nlohmann_json")
 endif() 
 
 ##############################################################################################################

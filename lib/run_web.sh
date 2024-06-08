@@ -11,9 +11,9 @@ mkdir build
 cd ./build
 
 # Enable compiling with emscripten
-header_file="../include/BUILD_EMCC.h"
+header_file="../include/project_template/BUILD_EMCC.h"
 new_string="#define BUILD_EMCC 1"
-sed -i "1s/.*/$new_string/" "$header_file"
+sed -i '2s/.*/'"$new_string"'/' "$header_file"
 echo "$header_file definition changed to: $new_string"
 
 # Pass in argument to CMakeLists.txt, set to EMCC compiler

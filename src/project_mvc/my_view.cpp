@@ -1,4 +1,7 @@
 #include "my_view.h"
+#include "hermes.h"
+#include "BUILD_EMCC.h"
+
 // Add whatever ImGui stuff you want to render here
 void MyView::RenderImGui(ImGuiIO &io)
 {
@@ -26,7 +29,7 @@ void MyView::HandleSDLEvents(SDL_Event &event)
 void MyView::SDLSetup(SDL_Renderer **renderer, SDL_Window **window)
 {
     SDL_WindowFlags f = (SDL_WindowFlags)(SDL_WINDOW_ALLOW_HIGHDPI);
-    *window = SDL_CreateWindow("Telos", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1920, 1080, f);
+    *window = SDL_CreateWindow("Telos", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, f);
     *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 }
 
@@ -73,14 +76,36 @@ void MyView::DrawCircle(SDL_Renderer &renderer)
     }
 }
 
-// Here is an example function on event handling. It just quits the program if 'q' is pressed.
+// Here is an example function on event handling. It makes a POST request if 'p' is pressed.
 void MyView::QuitOnPressQ(SDL_Event &event)
 {
     if (event.type == SDL_KEYDOWN)
     {
-        if (event.key.keysym.sym == SDLK_q)
+        if (event.key.keysym.sym == SDLK_p)
         {
-            exit(0);
+            // Open up your browser and see what the response is xD
+            // Head to the developer console and press "P" (make sure the SDL window is in focus)
+            POSTRequest();
         }
     }
+}
+
+// An example function to make a POST request using Hermes.
+// Probably best to have this kind of stuff in the Model, but for the sake of example, it's here.
+void MyView::POSTRequest()
+{
+#ifdef BUILD_EMCC
+
+    // JSON request body
+    nlohmann::json data = {
+        {"name", "morpheus"},
+        {"job", "leader"}};
+
+    // Make the POST request
+    ApiResponse resp = Hermes::POST("https://reqres.in/api/users", data);
+
+    // Print the response
+    std::cout << resp.data << std::endl;
+
+#endif
 }
