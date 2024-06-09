@@ -21,8 +21,6 @@ View::View(Controller *controller, MyView *myView)
     m_myView = myView;
     m_controller = controller;
 
-    ImVec4 m_clearColor = ImVec4(30.0f / 255, 30.0f / 255, 30.0f / 255, 30.0f / 255);
-
     m_VIEW_POLLING_RATE = 60;
     m_VIEW_INPUT_POLLING_RATE = 60;
 
@@ -67,7 +65,7 @@ void View::Render()
     ImGui_ImplSDLRenderer2_Init(m_renderer);
 
     pthread_t inputThreadId;
-    pthread_create(&inputThreadId, nullptr, &View::threadEntry, this);
+    pthread_create(&inputThreadId, nullptr, &View::ThreadEntry, this);
 
     const std::chrono::milliseconds frameDuration(1000 / m_VIEW_POLLING_RATE);
     auto startTime = std::chrono::high_resolution_clock::now();
@@ -149,8 +147,7 @@ void View::RenderFrame(ImGuiIO &io)
     SDL_RenderPresent(m_renderer);
 }
 
-
-void View::SDL_EventHandlingLoop()
+void View::SDLEventHandlingLoop()
 {
     const std::chrono::milliseconds frameDuration(1000 / m_VIEW_INPUT_POLLING_RATE);
     auto startTime = std::chrono::high_resolution_clock::now();

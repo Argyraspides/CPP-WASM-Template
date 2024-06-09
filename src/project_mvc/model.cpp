@@ -15,6 +15,6 @@ Model::~Model()
 {
 }
 
-void Model::run()
+void Model::Run()
 {
 }

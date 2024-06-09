@@ -1,5 +1,5 @@
 #pragma once
 class ModelInterface {
 public:
-    virtual void run() = 0;
+    virtual void Run() = 0;
 };

@@ -31,9 +31,9 @@ public:
     ~View();
 
     // AN ENTRY POINT FOR A THREAD TO THE NEW THREAD THAT WILL BE CREATED TO HANDLE INPUTS ON THE WORLD SCENE, SEPARATE FROM IMGUI INPUTS
-    static void *threadEntry(void *instance)
+    static void *ThreadEntry(void *instance)
     {
-        reinterpret_cast<View *>(instance)->SDL_EventHandlingLoop();
+        reinterpret_cast<View *>(instance)->SDLEventHandlingLoop();
         return nullptr;
     }
     void Render(); // SETS UP SDL2, DEAR IMGUI, AND BEGINS THE RENDER & INPUT LOOPS
@@ -42,21 +42,19 @@ public:
     void CleanupImGui();                                         // CLEANS UP IMGUI UPON APPLICATION EXIT
     ImGuiIO &SetupImGui();                                       // SETS UP IMGUI
 
-    void SDL_EventHandlingLoop();               // LOOP FOR SDL2 INPUTS (RUNS IN SEPARATE THREAD FROM IMGUI)
-    void SDL_ViewportHandler(SDL_Event &event); // ADD FUNCTIONS INTO THIS FUNCTION THAT HANDLES DIFFERENT INPUTS
-    void HandleSDLEvents();                     // HANDLES SDL EVENTS
-    void RenderFrame(ImGuiIO &io);              // RENDERS THE FRAME
-    Controller *m_controller;                   // CONTROLLER INTERFACE TO MANIPULATE AND/OR RETRIEVE DATA FROM THE MODEL
-    MyView *m_myView;                           // PATH TO THE USER DEFINED FUNCTIONS TO RENDER WHATEVER
+    void SDLEventHandlingLoop();               // LOOP FOR SDL2 INPUTS (RUNS IN SEPARATE THREAD FROM IMGUI)
+    void SDLViewportHandler(SDL_Event &event); // ADD FUNCTIONS INTO THIS FUNCTION THAT HANDLES DIFFERENT INPUTS
+    void HandleSDLEvents();                    // HANDLES SDL EVENTS
+    void RenderFrame(ImGuiIO &io);             // RENDERS THE FRAME
+    Controller *m_controller;                  // CONTROLLER INTERFACE TO MANIPULATE AND/OR RETRIEVE DATA FROM THE MODEL
+    MyView *m_myView;                          // PATH TO THE USER DEFINED FUNCTIONS TO RENDER WHATEVER
 
     // SDL BOILERPLATE TO SET UP THE WINDOW AND RENDERER
-    int m_SCREEN_WIDTH, m_SCREEN_HEIGHT; // SCREEN DIMENSIONS
-    int m_VIEW_POLLING_RATE;             // HOW MANY TIMES PER SECOND THE VIEW REFRESHES
-    int m_VIEW_INPUT_POLLING_RATE;       // HOW MANY TIMES PER SECOND THE VIEW WILL POLL FOR INPUTS
-    ImVec4 m_clearColor;                 // BACKGROUND COLOR
-    SDL_WindowFlags m_window_flags;      // WINDOW FLAGS
-    SDL_Window *m_window;                // SDL WINDOW
-    SDL_Renderer *m_renderer;            // SDL RENDERER
+    int m_VIEW_POLLING_RATE;        // HOW MANY TIMES PER SECOND THE VIEW REFRESHES
+    int m_VIEW_INPUT_POLLING_RATE;  // HOW MANY TIMES PER SECOND THE VIEW WILL POLL FOR INPUTS
+    SDL_WindowFlags m_window_flags; // WINDOW FLAGS
+    SDL_Window *m_window;           // SDL WINDOW
+    SDL_Renderer *m_renderer;       // SDL RENDERER
 
     // SDL WASN'T REALLY MEANT TO BE MULTITHREADED. AS A WORKAROUND, THE THREAD WHICH CREATED THE WINDOW AND RENDERER WILL CONSTANTLY POLL EVENTS AND ADD IT TO THIS
     // VECTOR ARRAY, WHERE OTHER THREADS CAN INSPECT THEM, RATHER THAN EACH THREAD CREATING ITS OWN EVENTS WHICH GIVES WEIRD BEHAVIOR

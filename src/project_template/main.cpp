@@ -10,8 +10,8 @@ int main()
     // Run the model in separate thread
     pthread_t modelThreadId;
 
-    // Create a new thread for the model, pass in the model instance, and run the model in that thread (see model.h for threadEntry function)
-    pthread_create(&modelThreadId, nullptr, &Model::threadEntry, &m);
+    // Create a new thread for the model, pass in the model instance, and run the model in that thread (see model.h for ThreadEntry function)
+    pthread_create(&modelThreadId, nullptr, &Model::ThreadEntry, &m);
 
     // Create a controller, pass in our model instance
     Controller c(&m);
